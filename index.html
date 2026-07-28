@@ -533,33 +533,63 @@ function speakPoem(idx){
   
   // 如果正在朗读，停止
   if(currentSpeech&&window.speechSynthesis.speaking){
-    window.speechSynthesis.cancel();
+    window.speechSynthesis.cancel();dictating=false;
     if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}
     currentSpeech=null;return;
   }
   
-  if(!window.speechSynthesis){
-    alert("您的浏览器不支持语音朗读功能");return;
-  }
+  if(!window.speechSynthesis){alert("您的浏览器不支持语音朗读功能");return}
   
-  // 创建朗读文本：标题 + 朝代作者 + 正文，逐句朗读
-  const fullText=p.title+" "+p.dynasty+" "+p.author+" "+p.text.replace(/\n/g,"，");
-  const utterance=new SpeechSynthesisUtterance(fullText);
-  utterance.lang="zh-CN";
-  utterance.rate=0.85;  // 稍慢，便于跟读
-  utterance.pitch=1.0;
+  // 逐句朗读，每句之间停顿2秒，语速慢
+  const lines=p.text.split("\n");
+  // 构建朗读队列：标题 → 朝代作者 → 每句诗 → 句间停顿
+  let queue=[];
   
-  // 尝试选中文语音
+  // 先朗读标题和作者
+  queue.push({text:"《"+p.title+"》 "+p.dynasty+" "+p.author,rate:0.65});
+  queue.push({text:null,delay:2500}); // 标题后停2.5秒
+  
+  // 逐句朗读每行诗
+  lines.forEach((line,i)=>{
+    queue.push({text:line,rate:0.6});  // 语速0.6，很慢
+    // 句间停顿2秒，让孩子跟读
+    queue.push({text:null,delay:2000});
+  });
+  
+  // 最后再整体朗读一遍全文（连贯版）
+  queue.push({text:"下面再完整朗读一遍",rate:0.7});
+  queue.push({text:null,delay:1500});
+  const fullText=p.text.replace(/\n/g,"，");
+  queue.push({text:fullText,rate:0.6});
+  
   const voices=window.speechSynthesis.getVoices();
   const zhVoice=voices.find(v=>v.lang.startsWith("zh")&&v.localService)||voices.find(v=>v.lang.startsWith("zh"));
-  if(zhVoice)utterance.voice=zhVoice;
   
-  utterance.onstart=()=>{if(btn){btn.classList.add("speaking");btn.innerHTML="⏸ 正在朗读..."}}
-  utterance.onend=()=>{if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}currentSpeech=null}
-  utterance.onerror=()=>{if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}currentSpeech=null}
+  dictating=true;
+  if(btn){btn.classList.add("speaking");btn.innerHTML="⏸ 正在朗读..."}
   
-  currentSpeech=utterance;
-  window.speechSynthesis.speak(utterance);
+  let i=0;
+  function next(){
+    if(i>=queue.length||!dictating){
+      dictating=false;
+      if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}
+      return;
+    }
+    const item=queue[i];i++;
+    if(item.text){
+      const u=new SpeechSynthesisUtterance(item.text);
+      u.lang="zh-CN";
+      u.rate=item.rate||0.6;
+      u.pitch=1.0;
+      if(zhVoice)u.voice=zhVoice;
+      u.onend=()=>next();
+      u.onerror=()=>next();
+      window.speechSynthesis.speak(u);
+    }else{
+      setTimeout(next,item.delay);
+    }
+  }
+  next();
 }
 
 // 预加载语音列表（某些浏览器需要异步加载）
