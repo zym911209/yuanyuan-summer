@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🌸 元元假期保卫战 · 暑期学习打卡工作台</title>
+<style>
+  :root {
+    --pink-50: #fff5f8;
+    --pink-100: #ffe9f1;
+    --pink-200: #ffd1e1;
+    --pink-300: #ffa8c8;
+    --pink-400: #ff7eaf;
+    --pink-500: #f8538e;
+    --pink-600: #d63d72;
+    --sun: #ffb627;
+    --sun-dark: #e8941a;
+    --green: #6dd97a;
+    --text: #4a2a36;
+    --text-light: #8a6072;
+    --card: #ffffff;
+    --shadow: 0 6px 20px rgba(216, 61, 114, 0.12);
+    --shadow-hover: 0 10px 28px rgba(216, 61, 114, 0.22);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #ffe3ee 0%, #fff5f8 50%, #ffe9f1 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    padding: 16px;
+  }
+
+  /* ===== 顶部头部 ===== */
+  header {
+    background: linear-gradient(135deg, #ff9ec1 0%, #ff7eaf 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 24px;
+    flex: 0 0 auto;
+    text-shadow: 0 2px 6px rgba(216, 61, 114, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .date-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.25);
+    padding: 6px 12px;
+    border-radius: 999px;
+    flex: 1 1 auto;
+    min-width: 240px;
+    justify-content: center;
+  }
+  .date-bar button {
+    background: white;
+    color: var(--pink-500);
+    border: none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.15s;
+  }
+  .date-bar button:hover { transform: scale(1.1); }
+  .date-bar input[type="date"] {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    color-scheme: light;
+  }
+  .date-bar input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+
+  .sun-display {
+    background: linear-gradient(135deg, #ffd86b 0%, #ffb627 100%);
+    color: #6b3d00;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(255, 182, 39, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sun-display .sun-icon { font-size: 22px; }
+
+  /* ===== 主体两栏布局 ===== */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .panel {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ===== 版块标题 ===== */
+  .section {
+    margin-bottom: 18px;
+  }
+  .section:last-child { margin-bottom: 0; }
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--pink-600);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px dashed var(--pink-200);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subsection-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pink-500);
+    margin: 12px 0 6px;
+    padding-left: 8px;
+    border-left: 3px solid var(--pink-300);
+  }
+
+  /* ===== 任务项 ===== */
+  .task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--pink-50);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1.5px solid transparent;
+  }
+  .task:hover {
+    background: var(--pink-100);
+    border-color: var(--pink-200);
+    transform: translateX(2px);
+  }
+  .task input[type="checkbox"] {
+    width: 20px; height: 20px;
+    accent-color: var(--pink-500);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .task label {
+    flex: 1;
+    cursor: pointer;
+    font-size: 14.5px;
+    user-select: none;
+  }
+  .task.done {
+    background: linear-gradient(90deg, #fff8e7 0%, #fff2d6 100%);
+    border-color: var(--sun);
+  }
+  .task.done label {
+    color: var(--text-light);
+    text-decoration: line-through;
+  }
+  .task .play-btn {
+    background: var(--pink-400);
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .task .play-btn:hover { background: var(--pink-500); }
+  .task .sun-tag {
+    font-size: 12px;
+    color: var(--sun-dark);
+    background: #fff2d6;
+    padding: 2px 8px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  /* ===== 右侧资源卡 ===== */
+  .resource-card {
+    background: var(--pink-50);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--pink-300);
+  }
+  .resource-card h3 {
+    font-size: 15px;
+    color: var(--pink-600);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .resource-card .meta {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 6px;
+  }
+  .resource-card .poem {
+    font-size: 15px;
+    line-height: 2;
+    color: var(--text);
+    text-align: center;
+    white-space: pre-line;
+    padding: 8px 0;
+    font-family: "STKaiti", "KaiTi", serif;
+  }
+  .resource-card .word-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .resource-card .word-list span {
+    background: white;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: 1px solid var(--pink-200);
+  }
+
+  /* ===== B站视频卡 ===== */
+  .video-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid var(--pink-200);
+  }
+  .video-card .video-title {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--pink-50);
+    border-bottom: 1px solid var(--pink-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .video-card .video-title a {
+    color: var(--pink-500);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .video-card iframe {
+    width: 100%;
+    height: 220px;
+    border: none;
+    display: block;
+  }
+  .video-card .fallback {
+    padding: 20px;
+    text-align: center;
+    background: var(--pink-50);
+  }
+  .video-card .fallback a {
+    display: inline-block;
+    background: var(--pink-500);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  /* ===== 奖励兑换 ===== */
+  .reward-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .reward-item {
+    background: linear-gradient(135deg, #fff8e7 0%, #fff2d6 100%);
+    border: 2px solid var(--sun);
+    border-radius: 14px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .reward-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(255, 182, 39, 0.35);
+  }
+  .reward-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+  .reward-item .reward-emoji { font-size: 32px; display: block; margin-bottom: 4px; }
+  .reward-item .reward-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .reward-item .reward-cost { font-size: 12px; color: var(--sun-dark); font-weight: 700; }
+
+  .history-list {
+    max-height: 180px;
+    overflow-y: auto;
+    background: var(--pink-50);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+  }
+  .history-list .empty { color: var(--text-light); text-align: center; padding: 10px; }
+  .history-item {
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--pink-200);
+    display: flex;
+    justify-content: space-between;
+  }
+  .history-item:last-child { border-bottom: none; }
+
+  /* ===== 工具栏 ===== */
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .toolbar button {
+    background: white;
+    color: var(--pink-500);
+    border: 1.5px solid var(--pink-300);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .toolbar button:hover {
+    background: var(--pink-100);
+    border-color: var(--pink-500);
+  }
+
+  /* ===== 浮动小太阳动画 ===== */
+  .sun-fly {
+    position: fixed;
+    font-size: 32px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: sunFly 1.4s ease-out forwards;
+  }
+  @keyframes sunFly {
+    0% { opacity: 1; transform: scale(0.5) translateY(0); }
+    30% { opacity: 1; transform: scale(1.4) translateY(-20px); }
+    100% { opacity: 0; transform: scale(1) translateY(-120px); }
+  }
+
+  /* ===== 弹窗 ===== */
+  .modal-mask {
+    position: fixed; inset: 0;
+    background: rgba(74, 42, 54, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-mask.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  }
+  .modal h3 { color: var(--pink-600); margin-bottom: 12px; font-size: 18px; }
+  .modal p { margin-bottom: 16px; font-size: 14px; }
+  .modal .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal .modal-btns button {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .modal .btn-confirm { background: var(--pink-500); color: white; }
+  .modal .btn-cancel { background: var(--pink-100); color: var(--pink-600); }
+  .modal select {
+    width: 100%;
+    padding: 8px;
+    border: 1.5px solid var(--pink-200);
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; }
+    header { font-size: 14px; padding: 14px 16px; gap: 10px; }
+    header h1 { font-size: 18px; }
+    .reward-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .panel { padding: 14px; }
+    .section-title { font-size: 15px; }
+    .task { padding: 8px 10px; }
+    .task label { font-size: 13.5px; }
+    .resource-card { padding: 12px; }
+    .resource-card .poem { font-size: 14px; }
+    .video-card iframe { height: 180px; }
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 8px; }
+    header { padding: 12px; flex-wrap: wrap; }
+    header h1 { font-size: 16px; }
+    .date-bar { order: 2; min-width: 100%; }
+    .sun-display { order: 3; font-size: 14px; }
+    .reward-grid { grid-template-columns: 1fr; }
+    .reward-item .reward-emoji { font-size: 24px; }
+    .toolbar button { font-size: 12px; padding: 5px 10px; }
+    .task .play-btn { font-size: 11px; padding: 3px 8px; }
+    .video-card iframe { height: 160px; }
+  }
+
+  /* 滚动条美化 */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--pink-50); }
+  ::-webkit-scrollbar-thumb { background: var(--pink-300); border-radius: 4px; }
+
+  .progress-bar {
+    background: var(--pink-100);
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sun), var(--pink-400));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+  .summary-line {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌸 元元假期保卫战</h1>
+  <div class="date-bar">
+    <button id="prevDay" title="前一天">◀</button>
+    <input type="date" id="datePicker">
+    <button id="nextDay" title="后一天">▶</button>
+    <button id="todayBtn" title="回到今天" style="width:auto;padding:0 12px;border-radius:999px;">今天</button>
+  </div>
+  <div class="sun-display" title="累计小太阳">
+    <span class="sun-icon">☀️</span>
+    <span id="totalSuns">0</span>
+  </div>
+</header>
+
+<div class="main">
+  <!-- ===== 左侧：任务清单 ===== -->
+  <div class="panel left-panel">
+    <div class="section">
+      <div class="section-title">📚 学习计划</div>
+
+      <div class="subsection-title">语文</div>
+      <div id="ywTasks"></div>
+
+      <div class="subsection-title">数学</div>
+      <div id="sxTasks"></div>
+
+      <div class="subsection-title">英语</div>
+      <div id="yyTasks"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🏠 生活习惯</div>
+      <div id="shTasks"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💪 运动健身</div>
+      <div id="ydTasks"></div>
+    </div>
+
+    <div class="summary-line">
+      <span id="dayProgress">今日完成 0 / 0</span>
+      <span id="daySuns">今日 ☀️ 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- ===== 右侧：目标内容 & 资源 ===== -->
+  <div class="panel right-panel">
+    <div class="section">
+      <div class="section-title">🎯 今日推荐资源</div>
+      <div id="resourceArea"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🎁 奖励兑换</div>
+      <div class="summary-line" style="margin-top:0;margin-bottom:10px;">
+        <span>累计小太阳：<b id="rewardSuns" style="color:var(--sun-dark)">0</b> ☀️</span>
+        <span id="rewardHint">加油攒太阳吧~</span>
+      </div>
+      <div class="reward-grid">
+        <div class="reward-item" data-cost="50" data-type="cartoon">
+          <span class="reward-emoji">📺</span>
+          <div class="reward-name">看一集动画片</div>
+          <div class="reward-cost">50 ☀️</div>
+        </div>
+        <div class="reward-item" data-cost="100" data-type="juice">
+          <span class="reward-emoji">🧃</span>
+          <div class="reward-name">果汁一杯</div>
+          <div class="reward-cost">100 ☀️</div>
+        </div>
+        <div class="reward-item" data-cost="200" data-type="pizza">
+          <span class="reward-emoji">🍕</span>
+          <div class="reward-name">吃披萨</div>
+          <div class="reward-cost">200 ☀️</div>
+        </div>
+      </div>
+
+      <div class="subsection-title">📋 兑换历史</div>
+      <div class="history-list" id="historyList">
+        <div class="empty">还没有兑换记录哦~</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button id="exportBtn">💾 导出备份</button>
+      <button id="importBtn">📥 导入备份</button>
+      <button id="resetDayBtn">🔄 重置今日</button>
+      <button id="helpBtn">❓ 使用说明</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+    </div>
+  </div>
+</div>
+
+<!-- ===== 兑换弹窗 ===== -->
+<div class="modal-mask" id="rewardModal">
+  <div class="modal">
+    <h3 id="rewardModalTitle">🎁 兑换奖励</h3>
+    <p id="rewardModalDesc"></p>
+    <div id="cartoonPicker" style="display:none">
+      <label style="font-size:13px;color:var(--text-light)">选择动画片：</label>
+      <select id="cartoonSelect">
+        <option value="BV1ZU9mBYEW9|巴巴爸爸">巴巴爸爸</option>
+        <option value="BV1j54y1N7jB|本和霍利小王国">本和霍利小王国</option>
+        <option value="BV1yB5pzdEM1|超级为什么">超级为什么</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="rewardCancel">取消</button>
+      <button class="btn-confirm" id="rewardConfirm">确认兑换</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 通用确认弹窗 ===== -->
+<div class="modal-mask" id="confirmModal">
+  <div class="modal">
+    <h3 id="confirmTitle">提示</h3>
+    <p id="confirmDesc"></p>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="confirmCancel">取消</button>
+      <button class="btn-confirm" id="confirmOk">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 帮助弹窗 ===== -->
+<div class="modal-mask" id="helpModal">
+  <div class="modal" style="max-width:520px">
+    <h3>❓ 使用说明</h3>
+    <p style="line-height:1.9;font-size:13.5px;color:var(--text)">
+      🌸 <b>欢迎使用元元假期保卫战打卡工作台！</b><br><br>
+      📅 <b>日期切换</b>：顶部日期选择器可切换任意日期，查看或补打卡历史。<br><br>
+      ✅ <b>完成任务</b>：左侧勾选任务，自动 +1 ☀️ 小太阳。<br><br>
+      🎯 <b>资源联动</b>：右侧自动显示当日推荐资源（古诗、生字、阅读、英语视频等）。<br><br>
+      🎁 <b>奖励兑换</b>：累计小太阳达标后，点击奖励卡片即可兑换。<br>
+      &nbsp;&nbsp;• 50 ☀️ = 一集动画片<br>
+      &nbsp;&nbsp;• 100 ☀️ = 一杯果汁<br>
+      &nbsp;&nbsp;• 200 ☀️ = 一份披萨<br><br>
+      💾 <b>数据备份</b>：定期点"导出备份"保存JSON，换设备时可"导入备份"恢复。<br><br>
+      📺 <b>B站视频</b>：受B站限制，部分视频无法在网页内嵌入播放，请点击"在B站打开"按钮跳转观看。<br><br>
+      ⚙️ <b>调整内容</b>：用文本编辑器打开本HTML，修改 <code>TASKS</code> 配置即可增删任务。
+    </p>
+    <div class="modal-btns">
+      <button class="btn-confirm" id="helpClose">知道了</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   数据配置区 - 可自行调整任务内容
+   ============================================================ */
+
+// 11首三上必背古诗（统编版三年级上册）
+const POEMS = [
+  { title:"所见", author:"袁枚", dynasty:"清", text:"牧童骑黄牛，歌声振林樾。\n意欲捕鸣蝉，忽然闭口立。" },
+  { title:"望洞庭", author:"刘禹锡", dynasty:"唐", text:"湖光秋月两相和，潭面无风镜未磨。\n遥望洞庭山水翠，白银盘里一青螺。" },
+  { title:"山行", author:"杜牧", dynasty:"唐", text:"远上寒山石径斜，白云生处有人家。\n停车坐爱枫林晚，霜叶红于二月花。" },
+  { title:"夜书所见", author:"叶绍翁", dynasty:"宋", text:"萧萧梧叶送寒声，江上秋风动客情。\n知有儿童挑促织，夜深篱落一灯明。" },
+  { title:"舟夜书所见", author:"查慎行", dynasty:"清", text:"月黑见渔灯，孤光一点萤。\n微微风簇浪，散作满河星。" },
+  { title:"早发白帝城", author:"李白", dynasty:"唐", text:"朝辞白帝彩云间，千里江陵一日还。\n两岸猿声啼不住，轻舟已过万重山。" },
+  { title:"鹿柴", author:"王维", dynasty:"唐", text:"空山不见人，但闻人语响。\n返景入深林，复照青苔上。" },
+  { title:"望天门山", author:"李白", dynasty:"唐", text:"天门中断楚江开，碧水东流至此回。\n两岸青山相对出，孤帆一片日边来。" },
+  { title:"饮湖上初晴后雨", author:"苏轼", dynasty:"宋", text:"水光潋滟晴方好，山色空蒙雨亦奇。\n欲把西湖比西子，淡妆浓抹总相宜。" },
+  { title:"采莲曲", author:"王昌龄", dynasty:"唐", text:"荷叶罗裙一色裁，芙蓉向脸两边开。\n乱入池中看不见，闻歌始觉有人来。" },
+  { title:"司马光", author:"无作者", dynasty:"宋", text:"群儿戏于庭，一儿登瓮，足跌没水中。\n众皆弃去，光持石击瓮破之，水迸，儿得活。" }
+];
+
+// 11本推荐书目
+const BOOKS = [
+  { name:"稻草人", author:"叶圣陶" },
+  { name:"格列佛游记", author:"斯威夫特" },
+  { name:"夏洛的网", author:"E·B·怀特" },
+  { name:"柳林风声", author:"肯尼斯·格雷厄姆" },
+  { name:"格林童话", author:"格林兄弟" },
+  { name:"草房子", author:"曹文轩" },
+  { name:"我的野生动物朋友", author:"蒂皮·德格雷" },
+  { name:"安徒生童话", author:"安徒生" },
+  { name:"绿山墙的安妮", author:"蒙哥马利" },
+  { name:"宝葫芦的秘密", author:"张天翼" },
+  { name:"乌丢丢的奇遇", author:"金波" }
+];
+
+// 人教版（统编版）三上语文生字词（按课精选）
+const SHENGZI = [
+  { lesson:"第1课 大青树下的小学", words:["晨","绒","球","汉","艳","服","装","扮","读","静","停","粗","影"] },
+  { lesson:"第2课 花的学校", words:["落","荒","笛","舞","狂","罚","假","互","所","够","猜","扬","臂"] },
+  { lesson:"第3课 不懂就要问", words:["诵","例","圈","段","练","糊","涂","呆"] },
+  { lesson:"第4课 古诗三首", words:["寒","径","斜","霜","赠","刘","盖","菊","残","君","橙","送","挑"] },
+  { lesson:"第5课 铺满金色巴掌的水泥道", words:["铺","泥","晶","院","墙","印","规","则","乱","棕","迟"] },
+  { lesson:"第6课 秋天的雨", words:["盒","颜","料","票","飘","争","仙","淡","闻","梨","勾","曲","丰"] },
+  { lesson:"第7课 听听，秋的声音", words:["抖","蟋","蟋","振","韵","掠","吟","辽","阔","音乐"] },
+  { lesson:"第8课 卖火柴的小女孩", words:["旧","裙","怜","饿","乎","焰","蜡","烛","富","晃","划","喷"] },
+  { lesson:"第9课 那一定会很好", words:["缩","努","茎","锯","斧","推","吱","拆"] },
+  { lesson:"第10课 在牛肚子里旅行", words:["咱","答","偷","骨","齿","胃","泪","咽","细","算"] },
+  { lesson:"第11课 一块奶酪", words:["宣","处","诱","舔","强","犯","禁","稍","豫","跺","聚"] }
+];
+
+// 沪教牛津版 2B 单词表（按单元精选）
+const WORDS_2B = [
+  { unit:"Unit 1 Animals", words:["lion","tiger","monkey","elephant","panda","bear"] },
+  { unit:"Unit 2 Food", words:["rice","meat","fish","chicken","vegetable","noodle"] },
+  { unit:"Unit 3 Clothes", words:["shirt","T-shirt","dress","skirt","shorts","hat"] },
+  { unit:"Unit 4 Activities", words:["run","jump","swim","fly","walk","climb"] },
+  { unit:"Unit 5 Sports", words:["football","basketball","tennis","table tennis","volleyball","badminton"] },
+  { unit:"Unit 6 My Week", words:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"] },
+  { unit:"Unit 7 Weather", words:["sunny","rainy","cloudy","windy","snowy","hot","cold"] },
+  { unit:"Unit 8 Time", words:["clock","o'clock","half","quarter","past","to"] },
+  { unit:"Unit 9 Places", words:["park","zoo","shop","school","home","hospital"] },
+  { unit:"Unit 10 Hobbies", words:["reading","drawing","singing","dancing","painting","writing"] },
+  { unit:"Unit 11 Daily Life", words:["breakfast","lunch","dinner","morning","afternoon","evening"] },
+  { unit:"Unit 12 Review", words:["family","father","mother","brother","sister","friend"] }
+];
+
+// 沪教牛津版 3A 单词表（按单元精选）
+const WORDS_3A = [
+  { unit:"Module 1 Unit 1 Hello", words:["hello","hi","goodbye","bye","good morning","good afternoon"] },
+  { unit:"Module 1 Unit 2 How are you", words:["fine","well","good","thank","you","how"] },
+  { unit:"Module 1 Unit 3 Are you Kitty", words:["yes","no","not","Kitty","Alice","Tom","Eddie"] },
+  { unit:"Module 2 Unit 4 My friends", words:["friend","tall","short","thin","fat","he","she"] },
+  { unit:"Module 2 Unit 5 My family", words:["father","mother","brother","sister","me","family"] },
+  { unit:"Module 2 Unit 6 Me", words:["head","hair","eye","ear","nose","mouth","face"] },
+  { unit:"Module 3 Unit 7 In the classroom", words:["blackboard","desk","chair","door","window","schoolbag"] },
+  { unit:"Module 3 Unit 8 At the fruit shop", words:["apple","banana","orange","pear","peach","grape"] },
+  { unit:"Module 3 Unit 9 In my room", words:["bed","desk","chair","table","box","bag"] },
+  { unit:"Module 4 Unit 10 Numbers", words:["one","two","three","four","five","six","seven","eight","nine","ten"] },
+  { unit:"Module 4 Unit 11 Small animals", words:["dog","cat","rabbit","mouse","fish","bird"] },
+  { unit:"Module 4 Unit 12 The four seasons", words:["spring","summer","autumn","winter","warm","hot","cool","cold"] }
+];
+
+// 邵鑫精读 L3 B站搜索（每日轮换篇目提示）
+const SHAOXIN_LESSONS = [
+  "第1讲：《草原》精读",
+  "第2讲：《丁香结》精读",
+  "第3讲：《古诗词三首》精读",
+  "第4讲：《花之歌》精读",
+  "第5讲：《七律·长征》精读",
+  "第6讲：《狼牙山五壮士》精读",
+  "第7讲：《开国大典》精读",
+  "第8讲：《灯光》精读",
+  "第9讲：《竹节人》精读",
+  "第10讲：《宇宙生命之谜》精读",
+  "第11讲：《故宫博物院》精读"
+];
+
+// B站视频配置
+const VIDEOS = {
+  yuxi3A: { bvid:"BV1j54y1N7jB", title:"3A 课本内容预习" },
+  genDu: { bvid:"BV1L8S3YdEWg", title:"3A 课文跟读" }
+};
+
+// 任务定义（可自行增删）
+const TASKS = [
+  // 语文
+  { id:"yw_shaoxin", group:"yw", name:"邵鑫精读L3文章讲解+笔记", hasVideo:"shaoxin" },
+  { id:"yw_shengzi", group:"yw", name:"练习三上生字词", hasResource:"shengzi" },
+  { id:"yw_shici", group:"yw", name:"诗词大闯关（背诵古诗）", hasResource:"poem" },
+  { id:"yw_yuedu", group:"yw", name:"书香阅读30分钟", hasResource:"book" },
+  { id:"yw_jilu", group:"yw", name:"完成3张读书记录卡" },
+  { id:"yw_chaoxie", group:"yw", name:"完成一首古诗抄写" },
+  // 数学
+  { id:"sx_lianxi", group:"sx", name:"每日两篇练习题" },
+  { id:"sx_koujue", group:"sx", name:"背诵乘法口诀" },
+  // 英语
+  { id:"yy_2b", group:"yy", name:"听写2B单词表", hasResource:"words2b" },
+  { id:"yy_3a", group:"yy", name:"跟读3A单词表", hasResource:"words3a" },
+  { id:"yy_3ayuwen", group:"yy", name:"预习3A课本内容", hasVideo:"yuxi3A" },
+  { id:"yy_gendu", group:"yy", name:"课文跟读", hasVideo:"genDu" },
+  // 生活习惯
+  { id:"sh_yifu", group:"sh", name:"晾晒衣服" },
+  { id:"sh_fangjian", group:"sh", name:"收拾房间" },
+  { id:"sh_wan", group:"sh", name:"洗碗" },
+  { id:"sh_diedie", group:"sh", name:"收叠衣服" },
+  // 运动健身
+  { id:"yd_chen", group:"yd", name:"晨间跳操" },
+  { id:"yd_sheng", group:"yd", name:"中午跳绳500个" },
+  { id:"yd_wan", group:"yd", name:"晚间跳操" }
+];
+
+const GROUP_NAMES = {
+  yw:"语文", sx:"数学", yy:"英语", sh:"生活习惯", yd:"运动健身"
+};
+
+const CARTOON_BVIDS = {
+  "巴巴爸爸":"BV1ZU9mBYEW9",
+  "本和霍利小王国":"BV1j54y1N7jB",
+  "超级为什么":"BV1yB5pzdEM1"
+};
+
+/* ============================================================
+   核心逻辑
+   ============================================================ */
+
+const START_DATE = "2026-07-28";  // 暑假打卡起始日期
+const STORAGE_PREFIX = "yuanyuan_summer_";
+const TOTAL_KEY = "yuanyuan_summer_total_suns";
+const EXCHANGE_KEY = "yuanyuan_summer_exchanges";
+
+let currentDate = todayStr();
+
+function todayStr() {
+  const d = new Date();
+  const tz = d.getTimezoneOffset() * 60000;
+  return new Date(d - tz).toISOString().slice(0,10);
+}
+
+// 安全的"日期加N天"函数（避免UTC与本地时区冲突）
+function addDays(dateStr, n) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m - 1, d + n);
+  const yy = dt.getFullYear();
+  const mm = String(dt.getMonth() + 1).padStart(2, "0");
+  const dd = String(dt.getDate()).padStart(2, "0");
+  return `${yy}-${mm}-${dd}`;
+}
+
+function dateOffset(dateStr) {
+  // 相对 START_DATE 的天数
+  const a = new Date(dateStr + "T00:00:00");
+  const b = new Date(START_DATE + "T00:00:00");
+  return Math.round((a - b) / 86400000);
+}
+
+function rotateIndex(offset, len) {
+  if (len <= 0) return 0;
+  return ((offset % len) + len) % len;
+}
+
+// 读取某日数据
+function getDayData(dateStr) {
+  const key = STORAGE_PREFIX + dateStr;
+  const raw = localStorage.getItem(key);
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) {}
+  }
+  const tasks = {};
+  TASKS.forEach(t => tasks[t.id] = false);
+  return { date: dateStr, tasks, suns: 0 };
+}
+
+function saveDayData(data) {
+  localStorage.setItem(STORAGE_PREFIX + data.date, JSON.stringify(data));
+}
+
+function getTotalSuns() {
+  return parseInt(localStorage.getItem(TOTAL_KEY) || "0", 10);
+}
+function setTotalSuns(n) {
+  localStorage.setItem(TOTAL_KEY, String(n));
+}
+
+function getExchanges() {
+  try { return JSON.parse(localStorage.getItem(EXCHANGE_KEY) || "[]"); }
+  catch(e) { return []; }
+}
+function saveExchanges(arr) {
+  localStorage.setItem(EXCHANGE_KEY, JSON.stringify(arr));
+}
+
+/* ===== 渲染任务列表 ===== */
+function renderTasks() {
+  const groups = { yw:[], sx:[], yy:[], sh:[], yd:[] };
+  TASKS.forEach(t => groups[t.group].push(t));
+
+  const containerMap = {
+    yw:"ywTasks", sx:"sxTasks", yy:"yyTasks", sh:"shTasks", yd:"ydTasks"
+  };
+
+  Object.keys(groups).forEach(g => {
+    const el = document.getElementById(containerMap[g]);
+    el.innerHTML = "";
+    groups[g].forEach(t => {
+      const div = document.createElement("div");
+      div.className = "task";
+      div.dataset.id = t.id;
+      div.innerHTML = `
+        <input type="checkbox" id="cb_${t.id}" data-id="${t.id}">
+        <label for="cb_${t.id}">${t.name}</label>
+        ${t.hasVideo ? `<button class="play-btn" data-video="${t.hasVideo}">▶ 观看</button>` : ""}
+        ${t.hasResource ? `<button class="play-btn" data-resource="${t.hasResource}">📖 查看</button>` : ""}
+        <span class="sun-tag">+1☀️</span>
+      `;
+      el.appendChild(div);
+    });
+  });
+}
+
+/* ===== 渲染某日打卡状态 ===== */
+function renderDayState() {
+  const data = getDayData(currentDate);
+  TASKS.forEach(t => {
+    const cb = document.getElementById("cb_" + t.id);
+    if (!cb) return;
+    cb.checked = !!data.tasks[t.id];
+    const taskEl = cb.closest(".task");
+    if (cb.checked) taskEl.classList.add("done");
+    else taskEl.classList.remove("done");
+  });
+
+  // 今日完成统计
+  const total = TASKS.length;
+  const done = TASKS.filter(t => data.tasks[t.id]).length;
+  document.getElementById("dayProgress").textContent = `今日完成 ${done} / ${total}`;
+  document.getElementById("daySuns").textContent = `今日 ☀️ ${data.suns}`;
+  document.getElementById("progressFill").style.width = (done/total*100) + "%";
+
+  // 累计小太阳
+  const totalSuns = getTotalSuns();
+  document.getElementById("totalSuns").textContent = totalSuns;
+  document.getElementById("rewardSuns").textContent = totalSuns;
+  document.getElementById("rewardHint").textContent =
+    totalSuns >= 200 ? "可以兑换披萨啦！🍕" :
+    totalSuns >= 100 ? "可以兑换果汁啦！🧃" :
+    totalSuns >= 50  ? "可以看动画片啦！📺" :
+    `还差 ${50 - totalSuns} ☀️ 即可看动画片`;
+
+  // 更新奖励卡片可用状态
+  document.querySelectorAll(".reward-item").forEach(el => {
+    const cost = parseInt(el.dataset.cost, 10);
+    if (totalSuns < cost) el.classList.add("disabled");
+    else el.classList.remove("disabled");
+  });
+
+  renderHistory();
+}
+
+/* ===== 渲染资源区 ===== */
+function renderResources() {
+  const offset = dateOffset(currentDate);
+  const area = document.getElementById("resourceArea");
+  area.innerHTML = "";
+
+  // 1. 今日古诗
+  const poemIdx = rotateIndex(offset, POEMS.length);
+  const poem = POEMS[poemIdx];
+  const poemCard = document.createElement("div");
+  poemCard.className = "resource-card";
+  poemCard.innerHTML = `
+    <h3>📜 今日古诗 · 第${poemIdx+1}首</h3>
+    <div class="meta">《${poem.title}》 · ${poem.dynasty} · ${poem.author}</div>
+    <div class="poem">${poem.text}</div>
+    <div style="text-align:center;margin-top:6px">
+      <a class="play-btn" href="https://www.gushiwen.cn/shiwen/default.aspx?searchstr=${encodeURIComponent(poem.title)}" target="_blank" rel="noopener">🔊 古诗文网查看跟读</a>
+    </div>
+  `;
+  area.appendChild(poemCard);
+
+  // 2. 今日生字词
+  const szIdx = rotateIndex(offset, SHENGZI.length);
+  const sz = SHENGZI[szIdx];
+  const szCard = document.createElement("div");
+  szCard.className = "resource-card";
+  szCard.innerHTML = `
+    <h3>📝 今日生字 · ${sz.lesson}</h3>
+    <div class="word-list">${sz.words.map(w=>`<span>${w}</span>`).join("")}</div>
+  `;
+  area.appendChild(szCard);
+
+  // 3. 今日阅读
+  const bkIdx = rotateIndex(offset, BOOKS.length);
+  const bk = BOOKS[bkIdx];
+  const bkCard = document.createElement("div");
+  bkCard.className = "resource-card";
+  bkCard.innerHTML = `
+    <h3>📖 今日阅读 · 第${bkIdx+1}本</h3>
+    <div class="meta">《${bk.name}》 · ${bk.author}</div>
+    <div style="font-size:13px;color:var(--text-light);margin-top:4px">请阅读30分钟，并完成读书记录卡。</div>
+  `;
+  area.appendChild(bkCard);
+
+  // 4. 邵鑫精读
+  const sxIdx = rotateIndex(offset, SHAOXIN_LESSONS.length);
+  const sxLesson = SHAOXIN_LESSONS[sxIdx];
+  const sxCard = document.createElement("div");
+  sxCard.className = "resource-card";
+  sxCard.innerHTML = `
+    <h3>📺 邵鑫精读L3 · ${sxLesson}</h3>
+    <div class="meta">今日篇目：${sxLesson}</div>
+    <div style="font-size:13px;color:var(--text-light);margin-top:4px">观看视频并做好笔记。</div>
+    <div style="text-align:center;margin-top:8px">
+      <a class="play-btn" href="https://search.bilibili.com/all?keyword=${encodeURIComponent('邵鑫精读L3 '+sxLesson)}" target="_blank" rel="noopener">▶ B站搜索观看</a>
+    </div>
+  `;
+  area.appendChild(sxCard);
+
+  // 5. 今日英语 2B 单词
+  const w2bIdx = rotateIndex(offset, WORDS_2B.length);
+  const w2b = WORDS_2B[w2bIdx];
+  const w2bCard = document.createElement("div");
+  w2bCard.className = "resource-card";
+  w2bCard.innerHTML = `
+    <h3>🅰️ 今日听写 · 2B ${w2b.unit}</h3>
+    <div class="word-list">${w2b.words.map(w=>`<span>${w}</span>`).join("")}</div>
+  `;
+  area.appendChild(w2bCard);
+
+  // 6. 今日英语 3A 单词
+  const w3aIdx = rotateIndex(offset, WORDS_3A.length);
+  const w3a = WORDS_3A[w3aIdx];
+  const w3aCard = document.createElement("div");
+  w3aCard.className = "resource-card";
+  w3aCard.innerHTML = `
+    <h3>🔤 今日跟读 · 3A ${w3a.unit}</h3>
+    <div class="word-list">${w3a.words.map(w=>`<span>${w}</span>`).join("")}</div>
+    <div style="font-size:12px;color:var(--text-light);margin-top:6px">建议跟读3遍，注意发音。</div>
+  `;
+  area.appendChild(w3aCard);
+
+  // 7. B站视频：3A 课本预习
+  area.appendChild(buildBiliCard(VIDEOS.yuxi3A.bvid, VIDEOS.yuxi3A.title, offset + 1));
+
+  // 8. B站视频：课文跟读
+  area.appendChild(buildBiliCard(VIDEOS.genDu.bvid, VIDEOS.genDu.title, offset + 1));
+}
+
+/* ===== 构建B站视频卡（混合方案：尝试嵌入+跳转按钮） ===== */
+function buildBiliCard(bvid, title, page) {
+  const card = document.createElement("div");
+  card.className = "video-card";
+  const embedUrl = `https://player.bilibili.com/player.html?bvid=${bvid}&page=${page}&high_quality=1&autoplay=0`;
+  const watchUrl = `https://www.bilibili.com/video/${bvid}?p=${page}`;
+  card.innerHTML = `
+    <div class="video-title">
+      <span>📺 ${title} · 第${page}集</span>
+      <a href="${watchUrl}" target="_blank" rel="noopener">🔗 在B站打开</a>
+    </div>
+    <iframe src="${embedUrl}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
+      onerror="this.parentElement.querySelector('.fallback').style.display='block'"></iframe>
+    <div class="fallback" style="display:none">
+      <div style="font-size:13px;color:var(--text-light)">🔒 B站限制嵌入播放</div>
+      <a href="${watchUrl}" target="_blank" rel="noopener">▶ 点击在B站观看第${page}集</a>
+    </div>
+  `;
+  // 5秒后检测iframe是否加载成功（B站通常会拒绝）
+  setTimeout(() => {
+    const iframe = card.querySelector("iframe");
+    const fallback = card.querySelector(".fallback");
+    if (iframe && fallback) {
+      // 简单的可见性检测：B站拒绝嵌入时iframe通常高度为0或显示错误
+      // 这里直接显示fallback按钮作为更可靠的方案
+      fallback.style.display = "block";
+      fallback.style.borderTop = "1px solid var(--pink-100)";
+    }
+  }, 3000);
+  return card;
+}
+
+/* ===== 渲染兑换历史 ===== */
+function renderHistory() {
+  const list = getExchanges();
+  const el = document.getElementById("historyList");
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">还没有兑换记录哦~</div>`;
+    return;
+  }
+  el.innerHTML = list.slice().reverse().map(item => `
+    <div class="history-item">
+      <span>${item.time} · ${item.target}</span>
+      <span style="color:var(--sun-dark)">-${item.cost}☀️</span>
+    </div>
+  `).join("");
+}
+
+/* ===== 任务勾选处理 ===== */
+function onTaskToggle(taskId) {
+  const data = getDayData(currentDate);
+  const wasDone = !!data.tasks[taskId];
+  data.tasks[taskId] = !wasDone;
+  data.suns = TASKS.filter(t => data.tasks[t.id]).length;
+  saveDayData(data);
+
+  // 更新累计小太阳
+  let total = getTotalSuns();
+  if (!wasDone) total += 1;
+  else total = Math.max(0, total - 1);
+  setTotalSuns(total);
+
+  // 飞出小太阳动画
+  if (!wasDone) {
+    const cb = document.getElementById("cb_" + taskId);
+    flySun(cb);
+  }
+
+  renderDayState();
+}
+
+function flySun(anchorEl) {
+  if (!anchorEl) return;
+  const rect = anchorEl.getBoundingClientRect();
+  const sun = document.createElement("div");
+  sun.className = "sun-fly";
+  sun.textContent = "☀️ +1";
+  sun.style.left = (rect.left + rect.width/2 - 20) + "px";
+  sun.style.top = (rect.top + rect.height/2 - 16) + "px";
+  document.body.appendChild(sun);
+  setTimeout(() => sun.remove(), 1400);
+}
+
+/* ===== 事件绑定 ===== */
+function bindEvents() {
+  // 任务勾选
+  document.body.addEventListener("change", e => {
+    if (e.target.matches('input[type="checkbox"][data-id]')) {
+      onTaskToggle(e.target.dataset.id);
+    }
+  });
+
+  // 查看资源按钮（滚动到右侧对应卡片）
+  document.body.addEventListener("click", e => {
+    const btn = e.target.closest("[data-resource]");
+    if (btn) {
+      const map = { poem:"今日古诗", shengzi:"今日生字", book:"今日阅读", words2b:"今日听写", words3a:"今日跟读" };
+      const target = map[btn.dataset.resource];
+      if (target) {
+        const cards = document.querySelectorAll("#resourceArea .resource-card h3");
+        for (const h of cards) {
+          if (h.textContent.includes(target)) {
+            h.scrollIntoView({ behavior:"smooth", block:"center" });
+            h.style.color = "var(--pink-600)";
+            setTimeout(() => h.style.color = "", 1500);
+            break;
+          }
+        }
+      }
+    }
+  });
+
+  // 观看视频按钮（滚动到右侧对应B站卡）
+  document.body.addEventListener("click", e => {
+    const btn = e.target.closest("[data-video]");
+    if (btn) {
+      const v = btn.dataset.video;
+      const titles = { shaoxin:"邵鑫精读", yuxi3A:"3A 课本内容预习", genDu:"3A 课文跟读" };
+      const target = titles[v];
+      if (target) {
+        const cards = document.querySelectorAll("#resourceArea .video-title span, #resourceArea .resource-card h3");
+        for (const h of cards) {
+          if (h.textContent.includes(target)) {
+            h.closest(".video-card, .resource-card").scrollIntoView({ behavior:"smooth", block:"center" });
+            break;
+          }
+        }
+      }
+    }
+  });
+
+  // 日期切换
+  document.getElementById("datePicker").addEventListener("change", e => {
+    currentDate = e.target.value;
+    renderDayState();
+    renderResources();
+  });
+  document.getElementById("prevDay").addEventListener("click", () => {
+    currentDate = addDays(currentDate, -1);
+    document.getElementById("datePicker").value = currentDate;
+    renderDayState();
+    renderResources();
+  });
+  document.getElementById("nextDay").addEventListener("click", () => {
+    currentDate = addDays(currentDate, 1);
+    document.getElementById("datePicker").value = currentDate;
+    renderDayState();
+    renderResources();
+  });
+  document.getElementById("todayBtn").addEventListener("click", () => {
+    currentDate = todayStr();
+    document.getElementById("datePicker").value = currentDate;
+    renderDayState();
+    renderResources();
+  });
+
+  // 奖励兑换
+  document.querySelectorAll(".reward-item").forEach(el => {
+    el.addEventListener("click", () => {
+      if (el.classList.contains("disabled")) {
+        const cost = parseInt(el.dataset.cost, 10);
+        const need = cost - getTotalSuns();
+        showConfirm("小太阳不足", `还差 ${need} ☀️ 才能兑换哦，继续加油！`, false);
+        return;
+      }
+      const type = el.dataset.type;
+      const cost = parseInt(el.dataset.cost, 10);
+      openRewardModal(type, cost);
+    });
+  });
+
+  document.getElementById("rewardCancel").addEventListener("click", closeRewardModal);
+  document.getElementById("rewardConfirm").addEventListener("click", confirmReward);
+
+  // 通用确认弹窗
+  document.getElementById("confirmCancel").addEventListener("click", () => {
+    document.getElementById("confirmModal").classList.remove("show");
+  });
+  document.getElementById("confirmOk").addEventListener("click", () => {
+    document.getElementById("confirmModal").classList.remove("show");
+    if (window._confirmCallback) {
+      window._confirmCallback();
+      window._confirmCallback = null;
+    }
+  });
+
+  // 导出备份
+  document.getElementById("exportBtn").addEventListener("click", exportBackup);
+  // 导入备份
+  document.getElementById("importBtn").addEventListener("click", () => {
+    document.getElementById("importFile").click();
+  });
+  document.getElementById("importFile").addEventListener("change", importBackup);
+
+  // 重置今日
+  document.getElementById("resetDayBtn").addEventListener("click", () => {
+    showConfirm("重置今日打卡", `确定要重置 ${currentDate} 的所有打卡记录吗？已获得的当日小太阳会从累计中扣除。`, () => {
+      const data = getDayData(currentDate);
+      const wasSuns = data.suns;
+      TASKS.forEach(t => data.tasks[t.id] = false);
+      data.suns = 0;
+      saveDayData(data);
+      setTotalSuns(Math.max(0, getTotalSuns() - wasSuns));
+      renderDayState();
+    });
+  });
+
+  // 帮助
+  document.getElementById("helpBtn").addEventListener("click", () => {
+    document.getElementById("helpModal").classList.add("show");
+  });
+  document.getElementById("helpClose").addEventListener("click", () => {
+    document.getElementById("helpModal").classList.remove("show");
+  });
+
+  // 点击遮罩关闭弹窗
+  document.querySelectorAll(".modal-mask").forEach(m => {
+    m.addEventListener("click", e => {
+      if (e.target === m) m.classList.remove("show");
+    });
+  });
+}
+
+/* ===== 奖励兑换 ===== */
+let currentReward = null;
+function openRewardModal(type, cost) {
+  currentReward = { type, cost };
+  const titleMap = { cartoon:"📺 兑换动画片", juice:"🧃 兑换果汁", pizza:"🍕 兑换披萨" };
+  const descMap = {
+    cartoon:`将消耗 ${cost} ☀️，可观看一集动画片。`,
+    juice:`将消耗 ${cost} ☀️，兑换果汁一杯。`,
+    pizza:`将消耗 ${cost} ☀️，兑换一份披萨。`
+  };
+  document.getElementById("rewardModalTitle").textContent = titleMap[type];
+  document.getElementById("rewardModalDesc").textContent = descMap[type];
+  document.getElementById("cartoonPicker").style.display = type === "cartoon" ? "block" : "none";
+  document.getElementById("rewardModal").classList.add("show");
+}
+function closeRewardModal() {
+  document.getElementById("rewardModal").classList.remove("show");
+  currentReward = null;
+}
+function confirmReward() {
+  if (!currentReward) return;
+  const { type, cost } = currentReward;
+  const total = getTotalSuns();
+  if (total < cost) {
+    closeRewardModal();
+    showConfirm("小太阳不足", "小太阳不够啦，继续完成任务吧！", false);
+    return;
+  }
+  let target = "";
+  let watchUrl = "";
+  if (type === "cartoon") {
+    const sel = document.getElementById("cartoonSelect").value.split("|");
+    target = "动画片：" + sel[1];
+    watchUrl = `https://www.bilibili.com/video/${sel[0]}`;
+  } else if (type === "juice") {
+    target = "果汁一杯";
+  } else if (type === "pizza") {
+    target = "披萨一份";
+  }
+
+  // 扣减小太阳
+  setTotalSuns(total - cost);
+  // 记录历史
+  const list = getExchanges();
+  const now = new Date();
+  const timeStr = now.toLocaleString("zh-CN", { hour12:false }).replace(/\//g,"-");
+  list.push({ time: timeStr, type, cost, target, date: currentDate });
+  saveExchanges(list);
+
+  closeRewardModal();
+  renderDayState();
+
+  // 显示兑换成功
+  let confirmMsg = `🎉 兑换成功！\n\n获得：${target}\n消耗：${cost} ☀️\n剩余：${getTotalSuns()} ☀️`;
+  if (watchUrl) {
+    confirmMsg += `\n\n点击确定前往B站观看动画片~`;
+    showConfirm("🎉 兑换成功", confirmMsg, () => {
+      window.open(watchUrl, "_blank");
+    });
+  } else {
+    showConfirm("🎉 兑换成功", confirmMsg, false);
+  }
+}
+
+/* ===== 通用确认弹窗 ===== */
+function showConfirm(title, desc, callback) {
+  document.getElementById("confirmTitle").textContent = title;
+  document.getElementById("confirmDesc").textContent = desc;
+  const okBtn = document.getElementById("confirmOk");
+  if (callback === false) {
+    okBtn.style.display = "none";
+  } else {
+    okBtn.style.display = "inline-block";
+    window._confirmCallback = callback;
+  }
+  document.getElementById("confirmModal").classList.add("show");
+}
+
+/* ===== 导出/导入备份 ===== */
+function exportBackup() {
+  const data = {
+    exportDate: new Date().toISOString(),
+    totalSuns: getTotalSuns(),
+    exchanges: getExchanges(),
+    days: {}
+  };
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(STORAGE_PREFIX)) {
+      data.days[key.slice(STORAGE_PREFIX.length)] = JSON.parse(localStorage.getItem(key));
+    }
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `元元假期保卫战_备份_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showConfirm("💾 备份已导出", "备份文件已下载到本地，请妥善保存。", false);
+}
+
+function importBackup(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (typeof data.totalSuns === "number") setTotalSuns(data.totalSuns);
+      if (Array.isArray(data.exchanges)) saveExchanges(data.exchanges);
+      if (data.days) {
+        Object.keys(data.days).forEach(date => {
+          localStorage.setItem(STORAGE_PREFIX + date, JSON.stringify(data.days[date]));
+        });
+      }
+      renderDayState();
+      showConfirm("✅ 导入成功", "备份已成功恢复，页面将刷新。", () => location.reload());
+    } catch(err) {
+      showConfirm("❌ 导入失败", "备份文件格式错误，请检查文件。", false);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+
+/* ===== 初始化 ===== */
+function init() {
+  document.getElementById("datePicker").value = currentDate;
+  renderTasks();
+  renderDayState();
+  renderResources();
+  bindEvents();
+
+  // 首次打开提示
+  if (!localStorage.getItem("yuanyuan_welcomed")) {
+    setTimeout(() => {
+      document.getElementById("helpModal").classList.add("show");
+      localStorage.setItem("yuanyuan_welcomed", "1");
+    }, 500);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
