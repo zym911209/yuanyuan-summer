@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 樱花粉色App图标 -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#fff8fb"/>
+      <stop offset="50%" stop-color="#ffb3cf"/>
+      <stop offset="100%" stop-color="#ff7eaf"/>
+    </radialGradient>
+    <linearGradient id="petal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff5f8"/>
+      <stop offset="100%" stop-color="#ffe0eb"/>
+    </linearGradient>
+  </defs>
+  <!-- 圆形背景 -->
+  <circle cx="256" cy="256" r="246" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="240" fill="#fff5f8" opacity="0.6"/>
+  <!-- 五瓣樱花 -->
+  <g transform="translate(256,256)">
+    <ellipse cx="0" cy="-95" rx="55" ry="78" fill="url(#petal)" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-95" rx="55" ry="78" fill="url(#petal)" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-95" rx="55" ry="78" fill="url(#petal)" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-95" rx="55" ry="78" fill="url(#petal)" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-95" rx="55" ry="78" fill="url(#petal)" transform="rotate(288)"/>
+    <!-- 花蕊 -->
+    <circle cx="0" cy="0" r="22" fill="#ffb627"/>
+    <circle cx="-8" cy="-10" r="5" fill="#e8941a"/>
+    <circle cx="8" cy="-10" r="5" fill="#e8941a"/>
+    <circle cx="0" cy="8" r="5" fill="#e8941a"/>
+    <circle cx="-12" cy="2" r="4" fill="#e8941a"/>
+    <circle cx="12" cy="2" r="4" fill="#e8941a"/>
+  </g>
+</svg>
