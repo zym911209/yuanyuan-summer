@@ -1,11 +1,12 @@
 // Service Worker for 元元假期保卫战 PWA
-const CACHE_NAME = 'yuanyuan-v1';
+const CACHE_NAME = 'yuanyuan-v2';
 const ASSETS = [
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/icon.svg'
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './icon.svg',
+  './sw.js'
 ];
 
 self.addEventListener('install', event => {
@@ -36,7 +37,7 @@ self.addEventListener('fetch', event => {
       });
     }).catch(() => {
       if (event.request.mode === 'navigate') {
-        return caches.match('/yuanyuan-summer.html');
+        return caches.match('./index.html');
       }
     })
   );
