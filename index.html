@@ -72,7 +72,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .res-card{background:var(--pink-bg);border-radius:10px;padding:10px;margin-bottom:8px;border-left:3px solid var(--pink)}
 .res-card h4{font-size:13px;color:var(--pink-dark);margin-bottom:4px}
 .res-card .meta{font-size:11px;color:var(--text-light)}
-.res-card .poem{font-size:14px;line-height:2;text-align:center;white-space:pre-line;padding:6px 0;font-family:"STKaiti","KaiTi",serif}
+.res-card .poem{font-size:18px;line-height:2.2;text-align:center;white-space:pre-line;padding:8px 0;font-family:"STKaiti","KaiTi",serif}
+.res-card .poem-title{font-size:16px;font-weight:700;text-align:center;margin-bottom:2px;display:flex;align-items:center;justify-content:center;gap:6px}
+.speak-btn{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--pink-light),#ffd1e1);border:1.5px solid var(--pink);color:var(--pink-dark);padding:3px 10px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none;transition:all .15s}
+.speak-btn:hover{background:var(--pink);color:white}
+.speak-btn.speaking{background:var(--sun);color:white;border-color:var(--sun)}
 .res-card .words{display:flex;flex-wrap:wrap;gap:4px}
 .res-card .words span{background:white;padding:2px 6px;border-radius:4px;font-size:11px;border:1px solid var(--pink-light)}
 .res-card .link-btn{display:inline-block;background:var(--pink);color:white;padding:4px 12px;border-radius:999px;font-size:11px;text-decoration:none;margin-top:4px}
@@ -518,6 +522,49 @@ function flySun(anchor){
   document.body.appendChild(s);setTimeout(()=>s.remove(),1200);
 }
 
+/* ===== 古诗朗读（Web Speech API） ===== */
+let currentSpeech=null;
+function speakPoem(idx){
+  const p=POEMS[idx];
+  const btn=document.getElementById("speakBtn"+idx);
+  
+  // 如果正在朗读，停止
+  if(currentSpeech&&window.speechSynthesis.speaking){
+    window.speechSynthesis.cancel();
+    if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}
+    currentSpeech=null;return;
+  }
+  
+  if(!window.speechSynthesis){
+    alert("您的浏览器不支持语音朗读功能");return;
+  }
+  
+  // 创建朗读文本：标题 + 朝代作者 + 正文，逐句朗读
+  const fullText=p.title+" "+p.dynasty+" "+p.author+" "+p.text.replace(/\n/g,"，");
+  const utterance=new SpeechSynthesisUtterance(fullText);
+  utterance.lang="zh-CN";
+  utterance.rate=0.85;  // 稍慢，便于跟读
+  utterance.pitch=1.0;
+  
+  // 尝试选中文语音
+  const voices=window.speechSynthesis.getVoices();
+  const zhVoice=voices.find(v=>v.lang.startsWith("zh")&&v.localService)||voices.find(v=>v.lang.startsWith("zh"));
+  if(zhVoice)utterance.voice=zhVoice;
+  
+  utterance.onstart=()=>{if(btn){btn.classList.add("speaking");btn.innerHTML="⏸ 正在朗读..."}}
+  utterance.onend=()=>{if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}currentSpeech=null}
+  utterance.onerror=()=>{if(btn){btn.classList.remove("speaking");btn.innerHTML="🔊 跟读朗读"}currentSpeech=null}
+  
+  currentSpeech=utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+// 预加载语音列表（某些浏览器需要异步加载）
+if(window.speechSynthesis){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+}
+
 /* ===== 日期切换 ===== */
 function onDateChange(){currentDate=document.getElementById("datePicker").value;renderDayState();renderResources()}
 function prevDay(){currentDate=addDays(currentDate,-1);document.getElementById("datePicker").value=currentDate;renderDayState();renderResources()}
@@ -530,9 +577,9 @@ function renderResources(){
   const area=document.getElementById("resourceArea");
   area.innerHTML="";
 
-  // 古诗
+  // 古诗（加大字体+内嵌朗读）
   const pi=rotateIdx(off,POEMS.length);const p=POEMS[pi];
-  area.innerHTML+=`<div class="card"><div class="res-card"><h4>📜 今日古诗 · 第${pi+1}首</h4><div class="meta">《${p.title}》· ${p.dynasty}·${p.author}</div><div class="poem">${p.text}</div><a class="link-btn" href="https://www.gushiwen.cn/shiwen/default.aspx?searchstr=${encodeURIComponent(p.title)}" target="_blank">🔊 古诗文网跟读</a></div></div>`;
+  area.innerHTML+=`<div class="card"><div class="res-card"><div class="poem-title">📜 今日古诗 · 第${pi+1}首<button class="speak-btn" onclick="speakPoem(${pi})" id="speakBtn${pi}">🔊 跟读朗读</button></div><div class="meta" style="text-align:center;margin-bottom:4px">《${p.title}》· ${p.dynasty}·${p.author}</div><div class="poem">${p.text}</div></div></div>`;
 
   // 生字
   const si=rotateIdx(off,SHENGZI.length);const sz=SHENGZI[si];
@@ -542,9 +589,9 @@ function renderResources(){
   const bi=rotateIdx(off,BOOKS.length);const bk=BOOKS[bi];
   area.innerHTML+=`<div class="card"><div class="res-card"><h4>📖 今日阅读 · 《${bk.name}》</h4><div class="meta">${bk.author} · 请阅读30分钟</div></div></div>`;
 
-  // 邵鑫精读
+  // 邵鑫精读（按日期推进）
   const sxi=rotateIdx(off,SHAOXIN.length);const sx=SHAOXIN[sxi];
-  area.innerHTML+=`<div class="card"><div class="res-card"><h4>📺 邵鑫精读 · ${sx}</h4><div class="meta">今日篇目：${sx}，做好笔记</div><a class="link-btn" href="https://search.bilibili.com/all?keyword=${encodeURIComponent("邵鑫精读L3 "+sx)}" target="_blank">▶ B站搜索观看</a></div></div>`;
+  area.innerHTML+=`<div class="card"><div class="res-card"><h4>📺 邵鑫精读 · 第${sxi+1}讲</h4><div class="meta">今日篇目：${sx}，做好笔记</div><a class="link-btn" href="https://search.bilibili.com/all?keyword=${encodeURIComponent("邵鑫精读L3 "+sx)}" target="_blank">▶ B站搜索观看</a></div></div>`;
 
   // 2B单词
   const wi=rotateIdx(off,WORDS_2B.length);const w2=WORDS_2B[wi];
@@ -554,8 +601,9 @@ function renderResources(){
   const w3i=rotateIdx(off,WORDS_3A.length);const w3=WORDS_3A[w3i];
   area.innerHTML+=`<div class="card"><div class="res-card"><h4>🔤 今日跟读 · 3A ${w3.unit}</h4><div class="words">${w3.words.map(w=>"<span>"+w+"</span>").join("")}</div></div></div>`;
 
-  // B站视频
-  const pg=off+1;
+  // B站视频（按日期推进集数）
+  // 使用 off+1 作为集数，确保每天推进一集
+  const pg=Math.max(1,off+1);
   Object.values(VIDEOS).forEach(v=>{
     const watchUrl=`https://www.bilibili.com/video/${v.bvid}?p=${pg}`;
     const embedUrl=`https://player.bilibili.com/player.html?bvid=${v.bvid}&page=${pg}&high_quality=1&autoplay=0`;
