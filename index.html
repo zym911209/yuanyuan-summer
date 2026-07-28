@@ -77,6 +77,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .speak-btn{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--pink-light),#ffd1e1);border:1.5px solid var(--pink);color:var(--pink-dark);padding:3px 10px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none;transition:all .15s}
 .speak-btn:hover{background:var(--pink);color:white}
 .speak-btn.speaking{background:var(--sun);color:white;border-color:var(--sun)}
+.dictate-btn{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border:1.5px solid #4caf50;color:#2e7d32;padding:4px 10px;border-radius:999px;font-size:12px;cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap}
+.dictate-btn:hover{background:#4caf50;color:white;border-color:#4caf50}
+.dictate-btn.dictating{background:#ff9800;color:white;border-color:#ff9800}
 .res-card .words{display:flex;flex-wrap:wrap;gap:4px}
 .res-card .words span{background:white;padding:2px 6px;border-radius:4px;font-size:11px;border:1px solid var(--pink-light)}
 .res-card .link-btn{display:inline-block;background:var(--pink);color:white;padding:4px 12px;border-radius:999px;font-size:11px;text-decoration:none;margin-top:4px}
@@ -565,6 +568,66 @@ if(window.speechSynthesis){
   window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
 }
 
+/* ===== 英语单词听写朗读 ===== */
+let dictating=false;
+function dictateWords(level,idx){
+  const btn=document.getElementById("dictBtn"+level+idx);
+  
+  // 如果正在朗读，停止
+  if(dictating&&window.speechSynthesis.speaking){
+    window.speechSynthesis.cancel();dictating=false;
+    if(btn){btn.classList.remove("dictating");btn.innerHTML=level==="2B"?"🔊 开始听写":"🔊 逐词朗读"}
+    return;
+  }
+  
+  const words=level==="2B"?WORDS_2B[idx].words:WORDS_3A[idx].words;
+  const unit=level==="2B"?WORDS_2B[idx].unit:WORDS_3A[idx].unit;
+  const gap=level==="2B"?2000:1000;  // 2B听写停2秒，3A跟读停1秒
+  
+  if(!window.speechSynthesis){alert("浏览器不支持语音朗读");return}
+  
+  dictating=true;
+  if(btn){btn.classList.add("dictating");btn.innerHTML="⏸ 正在朗读..."}
+  
+  const voices=window.speechSynthesis.getVoices();
+  const enVoice=voices.find(v=>v.lang.startsWith("en")&&v.localService)||voices.find(v=>v.lang.startsWith("en"));
+  
+  // 逐词朗读，每个单词读2遍
+  let queue=[];
+  words.forEach(w=>{
+    // 第1遍读单词
+    queue.push({text:w,delay:0});
+    // 第1遍读完后停gap毫秒
+    queue.push({text:null,delay:gap});
+    // 第2遍读单词
+    queue.push({text:w,delay:0});
+    // 第2遍读完停gap毫秒，然后进入下一个单词
+    queue.push({text:null,delay:gap});
+  });
+  
+  let i=0;
+  function next(){
+    if(i>=queue.length||!dictating){
+      dictating=false;
+      if(btn){btn.classList.remove("dictating");btn.innerHTML=level==="2B"?"🔊 开始听写":"🔊 逐词朗读"}
+      return;
+    }
+    const item=queue[i];i++;
+    if(item.text){
+      const u=new SpeechSynthesisUtterance(item.text);
+      u.lang="en-US";u.rate=0.8;u.pitch=1.0;
+      if(enVoice)u.voice=enVoice;
+      u.onend=()=>next();
+      u.onerror=()=>next();
+      window.speechSynthesis.speak(u);
+    }else{
+      // 延时等待（让孩子书写/跟读）
+      setTimeout(next,item.delay);
+    }
+  }
+  next();
+}
+
 /* ===== 日期切换 ===== */
 function onDateChange(){currentDate=document.getElementById("datePicker").value;renderDayState();renderResources()}
 function prevDay(){currentDate=addDays(currentDate,-1);document.getElementById("datePicker").value=currentDate;renderDayState();renderResources()}
@@ -589,17 +652,20 @@ function renderResources(){
   const bi=rotateIdx(off,BOOKS.length);const bk=BOOKS[bi];
   area.innerHTML+=`<div class="card"><div class="res-card"><h4>📖 今日阅读 · 《${bk.name}》</h4><div class="meta">${bk.author} · 请阅读30分钟</div></div></div>`;
 
-  // 邵鑫精读（按日期推进）
+  // 邵鑫精读（目录+跳转网盘）
   const sxi=rotateIdx(off,SHAOXIN.length);const sx=SHAOXIN[sxi];
-  area.innerHTML+=`<div class="card"><div class="res-card"><h4>📺 邵鑫精读 · 第${sxi+1}讲</h4><div class="meta">今日篇目：${sx}，做好笔记</div><a class="link-btn" href="https://search.bilibili.com/all?keyword=${encodeURIComponent("邵鑫精读L3 "+sx)}" target="_blank">▶ B站搜索观看</a></div></div>`;
+  let catalogHtml='<div class="sub-title">📖 课程目录（今日：第'+(sxi+1)+'讲）</div><div style="font-size:12px;line-height:1.8;margin-bottom:8px">';
+  SHAOXIN.forEach((s,i)=>{catalogHtml+=`<span style="color:${i===sxi?'var(--pink-dark)':'var(--text-light)'};font-weight:${i===sxi?'700':'400'}">${i+1}. ${s}</span><br>`});
+  catalogHtml+='</div>';
+  area.innerHTML+=`<div class="card"><div class="res-card"><h4>📺 邵鑫精读L3 · 第${sxi+1}讲</h4><div class="meta" style="margin-bottom:6px;color:var(--pink-dark);font-weight:600">今日学习：${sx}</div>${catalogHtml}<a class="link-btn" href="https://pan.baidu.com/s/1dBOfwsr4QJ2dtiCrFne9wQ" target="_blank" style="background:linear-gradient(135deg,#306cff,#1a73e8);font-size:13px;padding:6px 16px;margin-top:4px">📁 百度网盘观看（提取码：6595）</a><div style="font-size:11px;color:var(--text-light);margin-top:4px">点击上方按钮跳转到百度网盘APP观看对应视频</div></div></div>`;
 
-  // 2B单词
+  // 2B单词听写
   const wi=rotateIdx(off,WORDS_2B.length);const w2=WORDS_2B[wi];
-  area.innerHTML+=`<div class="card"><div class="res-card"><h4>🅰️ 今日听写 · 2B ${w2.unit}</h4><div class="words">${w2.words.map(w=>"<span>"+w+"</span>").join("")}</div></div></div>`;
+  area.innerHTML+=`<div class="card"><div class="res-card"><h4>🅰️ 今日听写 · 2B ${w2.unit}<button class="dictate-btn" onclick="dictateWords('2B',${wi})" id="dictBtn2B${wi}">🔊 开始听写</button></h4><div style="font-size:11px;color:var(--text-light);margin-bottom:4px">每个单词读2遍，中间停2秒供听写</div><div class="words">${w2.words.map(w=>"<span>"+w+"</span>").join("")}</div></div></div>`;
 
-  // 3A单词
+  // 3A单词跟读
   const w3i=rotateIdx(off,WORDS_3A.length);const w3=WORDS_3A[w3i];
-  area.innerHTML+=`<div class="card"><div class="res-card"><h4>🔤 今日跟读 · 3A ${w3.unit}</h4><div class="words">${w3.words.map(w=>"<span>"+w+"</span>").join("")}</div></div></div>`;
+  area.innerHTML+=`<div class="card"><div class="res-card"><h4>🔤 今日跟读 · 3A ${w3.unit}<button class="dictate-btn" onclick="dictateWords('3A',${w3i})" id="dictBtn3A${w3i}">🔊 逐词朗读</button></h4><div style="font-size:11px;color:var(--text-light);margin-bottom:4px">每个单词读2遍，中间停1秒供跟读</div><div class="words">${w3.words.map(w=>"<span>"+w+"</span>").join("")}</div></div></div>`;
 
   // B站视频（按日期推进集数）
   // 使用 off+1 作为集数，确保每天推进一集
