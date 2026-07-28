@@ -327,17 +327,17 @@ html{-webkit-overflow-scrolling:touch}
    数据配置区 - 可自行增删任务
    ============================================================ */
 const POEMS=[
-  {title:"所见",author:"袁枚",dynasty:"清",text:"牧童骑黄牛，歌声振林樾。\n意欲捕鸣蝉，忽然闭口立。"},
-  {title:"望洞庭",author:"刘禹锡",dynasty:"唐",text:"湖光秋月两相和，潭面无风镜未磨。\n遥望洞庭山水翠，白银盘里一青螺。"},
-  {title:"山行",author:"杜牧",dynasty:"唐",text:"远上寒山石径斜，白云生处有人家。\n停车坐爱枫林晚，霜叶红于二月花。"},
-  {title:"夜书所见",author:"叶绍翁",dynasty:"宋",text:"萧萧梧叶送寒声，江上秋风动客情。\n知有儿童挑促织，夜深篱落一灯明。"},
-  {title:"舟夜书所见",author:"查慎行",dynasty:"清",text:"月黑见渔灯，孤光一点萤。\n微微风簇浪，散作满河星。"},
-  {title:"早发白帝城",author:"李白",dynasty:"唐",text:"朝辞白帝彩云间，千里江陵一日还。\n两岸猿声啼不住，轻舟已过万重山。"},
-  {title:"鹿柴",author:"王维",dynasty:"唐",text:"空山不见人，但闻人语响。\n返景入深林，复照青苔上。"},
-  {title:"望天门山",author:"李白",dynasty:"唐",text:"天门中断楚江开，碧水东流至此回。\n两岸青山相对出，孤帆一片日边来。"},
-  {title:"饮湖上初晴后雨",author:"苏轼",dynasty:"宋",text:"水光潋滟晴方好，山色空蒙雨亦奇。\n欲把西湖比西子，淡妆浓抹总相宜。"},
-  {title:"采莲曲",author:"王昌龄",dynasty:"唐",text:"荷叶罗裙一色裁，芙蓉向脸两边开。\n乱入池中看不见，闻歌始觉有人来。"},
-  {title:"司马光",author:"无作者",dynasty:"宋",text:"群儿戏于庭，一儿登瓮，足跌没水中。\n众皆弃去，光持石击瓮破之，水迸，儿得活。"}
+  {title:"所见",author:"袁枚",dynasty:"清",text:"牧童骑黄牛\n歌声振林樾\n意欲捕鸣蝉\n忽然闭口立"},
+  {title:"望洞庭",author:"刘禹锡",dynasty:"唐",text:"湖光秋月两相和\n潭面无风镜未磨\n遥望洞庭山水翠\n白银盘里一青螺"},
+  {title:"山行",author:"杜牧",dynasty:"唐",text:"远上寒山石径斜\n白云生处有人家\n停车坐爱枫林晚\n霜叶红于二月花"},
+  {title:"夜书所见",author:"叶绍翁",dynasty:"宋",text:"萧萧梧叶送寒声\n江上秋风动客情\n知有儿童挑促织\n夜深篱落一灯明"},
+  {title:"舟夜书所见",author:"查慎行",dynasty:"清",text:"月黑见渔灯\n孤光一点萤\n微微风簇浪\n散作满河星"},
+  {title:"早发白帝城",author:"李白",dynasty:"唐",text:"朝辞白帝彩云间\n千里江陵一日还\n两岸猿声啼不住\n轻舟已过万重山"},
+  {title:"鹿柴",author:"王维",dynasty:"唐",text:"空山不见人\n但闻人语响\n返景入深林\n复照青苔上"},
+  {title:"望天门山",author:"李白",dynasty:"唐",text:"天门中断楚江开\n碧水东流至此回\n两岸青山相对出\n孤帆一片日边来"},
+  {title:"饮湖上初晴后雨",author:"苏轼",dynasty:"宋",text:"水光潋滟晴方好\n山色空蒙雨亦奇\n欲把西湖比西子\n淡妆浓抹总相宜"},
+  {title:"采莲曲",author:"王昌龄",dynasty:"唐",text:"荷叶罗裙一色裁\n芙蓉向脸两边开\n乱入池中看不见\n闻歌始觉有人来"},
+  {title:"司马光",author:"无作者",dynasty:"宋",text:"群儿戏于庭\n一儿登瓮\n足跌没水中\n众皆弃去\n光持石击瓮破之\n水迸\n儿得活"}
 ];
 const BOOKS=[
   {name:"稻草人",author:"叶圣陶"},{name:"格列佛游记",author:"斯威夫特"},
@@ -540,27 +540,32 @@ function speakPoem(idx){
   
   if(!window.speechSynthesis){alert("您的浏览器不支持语音朗读功能");return}
   
-  // 逐句朗读，每句之间停顿2秒，语速慢
+  // 逐句朗读：标题→朝代→作者→每行诗，句间停3秒
   const lines=p.text.split("\n");
-  // 构建朗读队列：标题 → 朝代作者 → 每句诗 → 句间停顿
   let queue=[];
   
-  // 先朗读标题和作者
-  queue.push({text:"《"+p.title+"》 "+p.dynasty+" "+p.author,rate:0.65});
-  queue.push({text:null,delay:2500}); // 标题后停2.5秒
+  // 朗读标题
+  queue.push({text:p.title,rate:0.5});
+  queue.push({text:null,delay:2000});
+  // 朗读朝代
+  queue.push({text:p.dynasty,rate:0.5});
+  queue.push({text:null,delay:1500});
+  // 朗读作者
+  queue.push({text:p.author,rate:0.5});
+  queue.push({text:null,delay:2500});
   
-  // 逐句朗读每行诗
-  lines.forEach((line,i)=>{
-    queue.push({text:line,rate:0.6});  // 语速0.6，很慢
-    // 句间停顿2秒，让孩子跟读
-    queue.push({text:null,delay:2000});
+  // 逐行朗读诗句，每行之间停3秒供跟读
+  lines.forEach((line)=>{
+    queue.push({text:line,rate:0.45});
+    queue.push({text:null,delay:3000});
   });
   
-  // 最后再整体朗读一遍全文（连贯版）
-  queue.push({text:"下面再完整朗读一遍",rate:0.7});
+  // 通知再完整朗读一遍
+  queue.push({text:"完整朗读一遍",rate:0.55});
   queue.push({text:null,delay:1500});
+  // 连贯朗读全文
   const fullText=p.text.replace(/\n/g,"，");
-  queue.push({text:fullText,rate:0.6});
+  queue.push({text:fullText,rate:0.45});
   
   const voices=window.speechSynthesis.getVoices();
   const zhVoice=voices.find(v=>v.lang.startsWith("zh")&&v.localService)||voices.find(v=>v.lang.startsWith("zh"));
@@ -579,7 +584,7 @@ function speakPoem(idx){
     if(item.text){
       const u=new SpeechSynthesisUtterance(item.text);
       u.lang="zh-CN";
-      u.rate=item.rate||0.6;
+      u.rate=item.rate||0.45;
       u.pitch=1.0;
       if(zhVoice)u.voice=zhVoice;
       u.onend=()=>next();
